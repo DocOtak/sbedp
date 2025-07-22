@@ -10,7 +10,7 @@ env:
 jobs:
   # This pushes the image to GitHub Packages.
   push:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     permissions:
       packages: write
       contents: read
