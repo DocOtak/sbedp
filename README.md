@@ -1,33 +1,29 @@
-# r2r/sbe
+# sbedp
 A dockerized version of the SeaBird Data Processing Tools with the following features:
 
-* Lightweight Window Manager with a VNC server
-* Built in browser based VNC client
+* Lightweight Window Manager with a VNC server (inherited from the base image)
+* Built in browser based VNC client (inherited from the base image)
 * Windows SeaBird Software working under a wine layer
 * Works on arm based macs M1 or later, will probably work on Arm based linux machines
-* Completely unknown if it works on Intel (x64) based machines, but reading of the docks for wine/hangover suggest it should be possible
 
 ## Building:
 The base image is ubuntu 24.04 with a very lightweight window manager, vnc server, and browser based control server.
 
-It installs [hangover](https://github.com/AndreRH/hangover) 10.6.1  then grafts a .wine directory (sbe_wine.tar.gz) into the root directory (/).
-Note that an earlier version of this installed things into the home directory (/config), in the base image, this directory is marked as being a VOLUME, which was causing very large (1GB+) dangling anon volumes.
+It installs [hangover](https://github.com/AndreRH/hangover) 10.6.1 and the runtime requirements (visual basic 2010 and 2012) for SBEDataProcessing using winetricks.
+The SeaBird processing software is then copied to the correct place in the image along with the system registry.
 
 To build:
 
 while in the same directory as the Dockerfile:
 
 ```
-docker build -t r2r/sbe:10.6.1 -t r2r/sbe:latest .
+docker build -t some_tag .
 ```
-Where r2r/sbe:10.6.1 is the tag for the image, in this case <org>/<name>:<hangover version>
-It also sets the "latest" tag so that a a bare "r2r/sbe" can be used
-when launching the container
 
 to run (preliminary) see more in interaction
 
 ```
-docker run --rm -it -p 3000:3000 r2r/sbe bash
+docker run --rm -it -p 3000:3000 some_tag bash
 ```
 
 --rm deletes the container on exit
@@ -51,10 +47,3 @@ wine SBEDataProc.exe
 And the sea bird data processing program should pop up...
 
 For more automated interaction, volume mounts and files need to be bound to the running image.
-
-## How was sbe_wine.tar.gz made?
-It did not seem to be possible to install the seabird data processing software non interactively, a window needed to pop up and have some interaction (the next button mostly).
-To do this, the base image (see the "from" line in the Dockerfile) was run manually using the above run steps.
-Hangover and wine were manually installed (from the deb dir), then the seabird processing software was manually installed.
-The .wine directory that is made during this process is portable and can be moved from one system to another.
-The .wine directory was tared and compressed then moved out of this manually made container using volume bind mounts.
