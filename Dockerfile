@@ -19,3 +19,5 @@ RUN <<EOF
 EOF
 
 ADD /graft /.wine
+
+HEALTHCHECK --interval=1s CMD pidof Xvnc || exit 1
