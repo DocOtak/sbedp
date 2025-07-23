@@ -13,6 +13,7 @@ RUN <<EOF
     apt-get install -y winetricks xvfb &&
     xvfb-run winetricks -q vcrun2010 vcrun2012 &&
     apt-get remove -y winetricks xvfb &&
+    apt-get autoremove -y &&
     apt-get clean &&
     cd / && rm -rf /build &&
     chown -R abc /.wine
