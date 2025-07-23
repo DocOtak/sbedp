@@ -10,12 +10,19 @@ RUN <<EOF
     tar xf *.tar &&
     apt-get update &&
     apt-get install -y ./*.deb &&
+    apt-get clean &&
+    cd / && rm -rf /build
+EOF
+
+# The following also creates the /.wine diriectory when winetricks is run
+# at the end of the step, we give the ownership of this wine directory to the abc user (from base image)
+RUN <<EOF
+    apt-get update &&
     apt-get install -y winetricks xvfb &&
     xvfb-run winetricks -q vcrun2010 vcrun2012 &&
     apt-get remove -y winetricks xvfb &&
     apt-get autoremove -y &&
     apt-get clean &&
-    cd / && rm -rf /build &&
     chown -R abc /.wine
 EOF
 
